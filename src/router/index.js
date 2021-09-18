@@ -21,7 +21,7 @@ VueRouter.prototype.push = function (location) {
 const Router = new VueRouter({
     mode: 'history',
     routes,
-    /* 用于跳转路由组件到顶部 */
+    /* 用于跳转路由件到顶部 */
     scrollBehavior() {
         return { x: 0, y: 0 }
     }
@@ -49,12 +49,18 @@ Router.beforeEach(async (to, from, next) => {
             }
         }
     } else {
+        if (to.path.indexOf('/trade') == 0 || to.path.startsWith('/pay') || to.path.startsWith('/center')) {
+            alert('你还没有登录')
+            next('/login?redirect=' + to.path)
+        } else {
+            next()
+        }
         next()
     }
     // 每次跳转的时候守卫都会执行,取出状态里的token,如果存在的话但是在点击了登录页面我们就跳往首页
     //点击了其他界面我们就去发请求拿用户信息,但是要在vuex里没有用户信息的时候才拿,有的话直接就next放行
     //用户请求信息的时候出错我们就跳往登录页面重新获取token,随便把没去成的路径给带过去,那边跳下一个页面的时候看带不带参数
-    //如果token不存在的话直接放行 还要做进入订单界面的判断,先暂时放行
+    //如果token不存在的话判断是否去往交易和支付和个人中心页面，如果是的话打往登录页面并携带参数如果不是放行
     //当用户信息和token都存在时,都会无条件放行,但是一刷新页面,vuex里面的东西都会刷新,只有token了,会去读本地的
     //然后又去获取用户信息,如果服务器返回token过期了就需要重新登录获取token,如果成功了就放行
 })

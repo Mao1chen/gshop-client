@@ -6,7 +6,7 @@
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
           <p v-if="$store.state.user.userMessage.name">
-            <span><img :src="$store.state.user.userMessage.headImg" /></span>
+            <span><img v-lazy="$store.state.user.userMessage.headImg" /></span>
             <a href="javascript:">{{ $store.state.user.userMessage.name }}</a>
             <!-- <router-link to="/login">登录</router-link> -->
             <!-- <a href="###" class="register">免费注册</a> -->

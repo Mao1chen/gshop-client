@@ -30,3 +30,5 @@ export const reqTradeNumber = (tradeNo, orderInfo) => ajax.post(`/order/auth/sub
 export const reqPaymentInfo = (orderId) => ajax.get(`/payment/weixin/createNative/${orderId}`)
 //获取订单支付状态的信息
 export const reqPayment = (orderId) => ajax.get(`/payment/weixin/queryPayStatus/${orderId}`)
+//获取我的订单列表的信息
+export const reqMyOrderInfo = (page, limit) => ajax.get(`/order/auth/${page}/${limit}`)

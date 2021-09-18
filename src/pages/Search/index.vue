@@ -144,13 +144,26 @@
               </li>
             </ul>
           </div>
-          <Pagination
+          <!-- 
+            //自己定义的组件
+            <Pagination
             :currentPage="options.pageNo"
             :pageSize="options.pageSize"
             :showPageNo="3"
             :total="total"
             @changeCurrent="changeCurrent"
-          />
+          /> -->
+          <div style="text-align: center">
+            <el-pagination
+              layout=" prev, pager, next,->,total"
+              :total="1000"
+              :current-page="options.pageNo"
+              :page-size="options.pageSize"
+              background
+              @current-change="changeCurrent"
+            >
+            </el-pagination>
+          </div>
         </div>
       </div>
     </div>

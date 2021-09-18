@@ -11,33 +11,82 @@
         </span>
       </h3>
       <div class="content">
-        <label>手机号:</label>
+        <!-- <label>手机号:</label>
         <input type="text" placeholder="请输入你的手机号" v-model="phone" />
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg">错误提示信息</span> -->
+        <label>手机号:</label>
+        <input
+          type="text"
+          v-model="phone"
+          name="phone"
+          placeholder="请输入你的手机号"
+          v-validate="{ required: true, regex: /^1\d{10}$/ }"
+          :class="{ invalid: errors.has('phone') }"
+        />
+        <span class="error-msg">{{ errors.first('phone') }}</span>
       </div>
       <div class="content">
         <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码" v-model="code" />
+        <!--    <input type="text" placeholder="请输入验证码" v-model="code" />
         <img
           ref="code"
-          src="http://182.92.128.115/api/user/passport/code"
+          src="http://captcha.qq.com/getimage?aid=2000201&uin=0&0.9691043759671922"
           alt="code"
+          style="width: 80px; height: 30px"
         />
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg">错误提示信息</span> -->
+        <input
+          v-model="mobile"
+          type="text"
+          name="code"
+          placeholder="请输入验证码"
+          v-validate="{ required: true, regex: /^\d{4}$/ }"
+          :class="{ invalid: errors.has('code') }"
+        />
+        <img
+          ref="code"
+          src="http://captcha.qq.com/getimage?aid=2000201&uin=0&0.9691043759671922"
+          alt="code"
+          style="width: 80px; height: 30px"
+        />
+        <span class="error-msg">{{ errors.first('code') }}</span>
       </div>
       <div class="content">
-        <label>登录密码:</label>
+        <!-- <label>登录密码:</label>
         <input
           type="text"
           placeholder="请输入你的登录密码"
           v-model="password"
         />
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg">错误提示信息</span> -->
+        <label>登录密码:</label>
+        <input
+          type="password"
+          v-model="password"
+          placeholder="请输入你的登录密码 格式为长度6-18位数字 英文 特殊符号且必须包含数字及英文  "
+          name="password"
+          v-validate="{
+            required: true,
+            regex: /^(?=.*\d)(?=.*[a-zA-Z])[\da-zA-Z~!@#$%^&*]{6,18}$/
+          }"
+          :class="{ invalid: errors.has('password') }"
+        />
+        <span class="error-msg">{{ errors.first('password') }}</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码" v-model="password2" />
-        <span class="error-msg">错误提示信息</span>
+        <input
+          type="password"
+          v-model="password2"
+          placeholder="请确认你的密码是否相同"
+          name="password"
+          v-validate="{
+            required: true,
+            regex: /^(?=.*\d)(?=.*[a-zA-Z])[\da-zA-Z~!@#$%^&*]{6,18}$/
+          }"
+          :class="{ invalid: errors.has('password2') }"
+        />
+        <span class="error-msg">{{ errors.first('password2') }}</span>
       </div>
       <div class="controls">
         <input name="m1" type="checkbox" v-model="ischeck" />
@@ -81,8 +130,10 @@ export default {
   },
   methods: {
     async register() {
-      const { phone, code, password, password2 } = this
-      if (phone && code && password && password2 && password == password2) {
+      // 对所有表单进行验证
+      const success = await this.$validator.validateAll()
+      if (success) {
+        const { phone, code, password } = this
         try {
           //返回的是个成功或者失败的promise,成功就走以下代码,失败就catch捕捉一下
           await this.$store.dispatch('user/reqUserRegisterAction', {
@@ -96,7 +147,7 @@ export default {
           alert(error.message)
         }
       } else {
-        alert('请输入完整的信息')
+        this.$message.warning('请确认你的信息是否正确')
       }
     }
   }
